@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -7,34 +7,30 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import {db} from './configs/firebase';
+import {connect} from 'react-redux';
+import {addTodoAction} from '../store/actions/addTodoAction';
 
-const AddTodo = () => {
-  const [value, setText] = useState('add your todo');
-
-  const addTodo = () => {
-    db.collection('todos')
-      .add({
-        text: value,
-        done: false,
-      })
-      .then(() => {
-        setText('');
-      })
-      .catch(err => {
-        console.log('catched error');
-        console.log(err);
-      });
+class AddTodo extends Component {
+  state = {
+    text: '',
   };
-  return (
-    <View style={styles.container}>
-      <TextInput multiline value={value} onChangeText={setText} />
-      <TouchableOpacity onPress={addTodo}>
-        <Text>addTodo</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+
+  addTodo = () => {
+    const {dispathTodo} = this.props;
+    dispathTodo({...this.state, done: false});
+  };
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <TextInput multiline onChangeText={text => this.setState({text})} />
+        <TouchableOpacity onPress={this.addTodo}>
+          <Text>addTodo</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -44,4 +40,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddTodo;
+const mapStateToProps = state => {
+  const {todos} = state;
+  return {todos};
+};
+
+const mapDispatchToProps = dispath => {
+  return {
+    dispathTodo: todo => dispath(addTodoAction(todo)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AddTodo);
