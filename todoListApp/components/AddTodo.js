@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-
 import {connect} from 'react-redux';
+
 import {addTodoAction} from '../store/actions/addTodoAction';
 
 class AddTodo extends Component {
@@ -20,10 +20,22 @@ class AddTodo extends Component {
     dispathTodo({...this.state, done: false});
   };
 
+  handleChange = (name, value) => {
+    console.log(name, value);
+    this.setState({
+      [name]: value,
+    });
+  };
+
   render() {
+    const {text} = this.state;
     return (
       <View style={styles.container}>
-        <TextInput multiline onChangeText={text => this.setState({text})} />
+        <TextInput
+          multiline
+          onChangeText={value => this.handleChange('text', value)}
+          value={text}
+        />
         <TouchableOpacity onPress={this.addTodo}>
           <Text>addTodo</Text>
         </TouchableOpacity>

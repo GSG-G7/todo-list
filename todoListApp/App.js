@@ -1,17 +1,16 @@
 import React from 'react';
 import {SafeAreaView, ScrollView, View, StatusBar} from 'react-native';
-
 import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
+import logger from 'redux-logger';
 
 import './components/configs/firebase';
 import Todos from './components/Todos';
 import AddTodo from './components/AddTodo';
-
 import rootReducer from './store/reducers/rootReducer';
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = createStore(rootReducer, applyMiddleware(thunk, logger));
 
 const App = () => {
   return (
@@ -20,8 +19,8 @@ const App = () => {
       <SafeAreaView>
         <ScrollView>
           <View>
-            <AddTodo />
             <Todos />
+            <AddTodo />
           </View>
         </ScrollView>
       </SafeAreaView>
