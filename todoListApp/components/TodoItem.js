@@ -1,17 +1,17 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const TodoItem = ({id, text, markDone, deleteTodo}) => (
+const TodoItem = ({ id, text, toggleDone, isDone, deleteTodo }) => (
   <View style={styles.todoWraper}>
-    <Text style={styles.todoText}>{text}</Text>
+    <Text style={[styles.todoText, isDone ? styles.doneText : '']}>{text}</Text>
     <View style={styles.todoButtons}>
-      {markDone && (
+      {toggleDone && (
         <TouchableOpacity
           style={[styles.btn, styles.btnText, styles.doneBtn]}
           onPress={() => {
-            markDone(id);
+            toggleDone(id);
           }}>
-          <Text style={styles.btnText}>Done</Text>
+          <Text style={styles.btnText}>{isDone ? 'redo' : 'mark as done'}</Text>
         </TouchableOpacity>
       )}
 
@@ -33,12 +33,18 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '70%',
     height: 180,
-    backgroundColor: '#7ECFD9',
+    backgroundColor: '#990a8a',
     justifyContent: 'space-between',
+    alignSelf: 'center',
+    margin: 10,
   },
   todoText: {
     fontSize: 18,
     margin: 10,
+    color: '#fff',
+  },
+  doneText: {
+    textDecorationLine: 'line-through',
   },
   btn: {
     backgroundColor: 'blue',
@@ -59,10 +65,10 @@ const styles = StyleSheet.create({
     height: '20%',
   },
   doneBtn: {
-    backgroundColor: '#33D542',
+    backgroundColor: '#660a8a',
   },
   deleteBtn: {
-    backgroundColor: '#F72B38',
+    backgroundColor: '#660a8a',
   },
 });
 

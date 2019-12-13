@@ -1,61 +1,77 @@
-import React, {useState, useEffect} from 'react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {StyleSheet} from 'react-native';
 
 import TodoItem from './TodoItem';
 
-import {db} from './configs/firebase';
+import {toggleTodoDoneAction} from '../store/actions/markTodoAction';
+import {deleteTodoAction} from '../store/actions/deleteTodoAction';
+import {fetchTodosAction} from '../store/actions/fetchTodosAction';
 
-const Todos = ({done = false}) => {
-  const [todos, setTodos] = useState([
-    {
-      id: '1',
-      text: 'simple todo',
-    },
-  ]);
+class Todos extends Component {
+  state = {};
 
-  useEffect(() => {
-    db.collection('todos')
-      .where('done', '==', done)
-      .get()
-      .then(snapshot => {
-        const fetchedTodos = [];
-        snapshot.forEach(doc =>
-          fetchedTodos.push({
-            id: doc.id,
-            ...doc.data(),
-          }),
-        );
-        return fetchedTodos;
-      })
-      .then(setTodos);
-  }, [done]);
+  componentDidMount() {
+    const {fetchTodosDispatcher} = this.props;
+    fetchTodosDispatcher();
+  }
 
-  const markDone = id => {
-    db.collection('todos')
-      .doc(id)
-      .update({
-        done: true,
-      })
-      .catch(console.log);
+  toggleDone = (id, done) => {
+    const {toggleDoneDispatcher} = this.props;
+    toggleDoneDispatcher(id, done);
   };
 
-  const deleteTodo = id => {
-    console.log('mark deleted');
-    db.collection('todos')
-      .doc(id)
-      .delete()
-      .catch(console.log);
-    setTodos(todos.filter(todo => todo.id !== id));
+  deleteTodo = id => {
+    const {deleteTodoDispatcher} = this.props;
+    deleteTodoDispatcher(id);
   };
 
-  return todos.map(todo => (
-    <TodoItem
-      key={todo.id}
-      id={todo.id}
-      text={todo.text}
-      markDone={!done ? markDone : undefined}
-      deleteTodo={deleteTodo}
-    />
-  ));
+  render() {
+    const {todos} = this.props;
+
+    return todos
+      ? todos.map(todo => (
+          <TodoItem
+            style={styles.todo}
+            key={todo.id}
+            id={todo.id}
+            text={todo.text}
+            toggleDone={this.toggleDone}
+            deleteTodo={this.deleteTodo}
+            isDone={todo.done}
+          />
+        ))
+      : null;
+  }
+}
+
+const styles = StyleSheet.create({
+  todo: {
+    alignSelf: 'center',
+    color: 'red',
+  },
+});
+
+const mapStateToProps = state => {
+  const {todos} = state;
+  return {
+    todos,
+  };
 };
 
-export default Todos;
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchTodosDispatcher: () => dispatch(fetchTodosAction()),
+    toggleDoneDispatcher: (id, done) => {
+      dispatch(toggleTodoDoneAction(id, done));
+    },
+    deleteTodoDispatcher: id => {
+      dispatch(deleteTodoAction(id));
+    },
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Todos);

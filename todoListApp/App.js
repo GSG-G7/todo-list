@@ -7,10 +7,11 @@ import logger from 'redux-logger';
 
 import './components/configs/firebase';
 import Todos from './components/Todos';
+import Navbar from './components/Navbar';
 import AddTodo from './components/AddTodo';
 import rootReducer from './store/reducers/rootReducer';
 
-const store = createStore(rootReducer, applyMiddleware(thunk, logger));
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const App = () => {
   return (
@@ -19,8 +20,9 @@ const App = () => {
       <SafeAreaView>
         <ScrollView>
           <View>
-            <Todos />
+            <Navbar />
             <AddTodo />
+            <Todos />
           </View>
         </ScrollView>
       </SafeAreaView>

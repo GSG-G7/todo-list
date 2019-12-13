@@ -1,6 +1,6 @@
 import {db} from '../../components/configs/firebase';
 
-export const actionType = 'ADD_TODO';
+export const ADD_TODO = 'ADD_TODO';
 
 export const addTodoAction = payload => {
   return (dispatch, _getState) => {
@@ -14,7 +14,7 @@ export const addTodoAction = payload => {
         return docRef.get();
       })
       .then(ref =>
-        dispatch({type: actionType, payload: {id: ref.id, ...ref.data()}}),
+        dispatch({type: ADD_TODO, payload: {id: ref.id, ...ref.data()}}),
       )
       .catch(console.log);
   };

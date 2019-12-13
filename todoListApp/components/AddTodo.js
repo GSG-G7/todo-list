@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+
 import {connect} from 'react-redux';
 
 import {addTodoAction} from '../store/actions/addTodoAction';
@@ -32,12 +33,13 @@ class AddTodo extends Component {
     return (
       <View style={styles.container}>
         <TextInput
+          style={styles.textInput}
           multiline
           onChangeText={value => this.handleChange('text', value)}
           value={text}
         />
-        <TouchableOpacity onPress={this.addTodo}>
-          <Text>addTodo</Text>
+        <TouchableOpacity style={styles.addTodo} onPress={this.addTodo}>
+          <Text style={styles.addTodoText}>addTodo</Text>
         </TouchableOpacity>
       </View>
     );
@@ -46,9 +48,25 @@ class AddTodo extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: '70%',
-    backgroundColor: 'red',
-    flexDirection: 'row',
+    width: '80%',
+    alignSelf: 'center',
+    marginTop: 10,
+    justifyContent: 'space-between',
+    height: 90,
+  },
+  textInput: {
+    borderBottomColor: '#000000',
+    borderBottomWidth: 1,
+  },
+  addTodo: {
+    backgroundColor: '#33118a',
+    width: '30%',
+  },
+  addTodoText: {
+    textAlign: 'center',
+    alignItems: 'center',
+    fontSize: 20,
+    color: '#fff',
   },
 });
 
@@ -63,7 +81,4 @@ const mapDispatchToProps = dispath => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddTodo);
+export default connect(mapStateToProps, mapDispatchToProps)(AddTodo);
